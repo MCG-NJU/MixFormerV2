@@ -1,0 +1,17 @@
+*.idea
+*~
+*__pycache__*
+*.pyc
+*.vscode
+*.pytest_cache
+*.csv
+data
+**/local.py
+*.log
+**/checkpoints
+/tensorboard
+/logs
+/models
+/outputs
+/checkpoints
+/test
