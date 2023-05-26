@@ -13,6 +13,21 @@ The official implementation of paper: [**MixFormerV2: Efficient Fully Transforme
 - **[May 26, 2023]** Code is available now!
 
 
+## Highlights
+
+### :sparkles: Efficient Fully Transformer Tracking Framework
+
+MixFormerV2 is a well unified fully transformer tracking model, without any dense convolutional operation and complex score prediction module. We propose four key prediction tokens to capture the correlation between target template and search area.
+
+### :sparkles: A New Distillation-based Model Reduction Paradigm
+
+To further improve efficiency, we present a new distillation paradigm for tracking model, including dense-to-sparse stage and deep-to-shallow stage.
+
+### :sparkles: Strong Performance and Fast Inference Speed
+
+MixFormerV2 works well for different benchmarks and can achieve **70.6%** AUC on LaSOT and **57.4%** AUC on TNL2k, while keeping 165fps on GPU. To our best knowledge, MixFormerV2-S is the **first** transformer-based one-stream tracker which achieves real-time running on CPU.
+
+
 ## Install the environment
 Use the Anaconda
 ``` bash
@@ -80,6 +95,7 @@ Yutao Cui: cuiyutao@smail.nju.edu.cn
 
 
 ## Citiation
+``` bibtex
 @misc{mixformerv2,
       title={MixFormerV2: Efficient Fully Transformer Tracking}, 
       author={Yutao Cui and Tianhui Song and Gangshan Wu and Limin Wang},
@@ -87,3 +103,4 @@ Yutao Cui: cuiyutao@smail.nju.edu.cn
       eprint={2305.15896},
       archivePrefix={arXiv}
 }
+```
