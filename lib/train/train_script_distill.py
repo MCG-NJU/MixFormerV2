@@ -1,6 +1,5 @@
 from copy import deepcopy
 import os
-from lib.train.actors.mixformer_distill import MixFormerDistillActor
 # loss function related
 from lib.utils.box_ops import ciou_loss, ciou_loss
 from torch.nn.functional import l1_loss
@@ -14,7 +13,8 @@ from .base_functions import *
 # network related
 from lib.models.mixformer_vit import build_mixformer_vit
 from lib.models.mixformer2_vit import build_mixformer2_vit, build_mixformer2_vit_stu
-from lib.train.actors import MixFormerDistillActor, MixFormerSelfDistillActor
+# forward propagation related
+from lib.train.actors import MixFormerDistillStage1Actor, MixFormerDistillStage2Actor
 # for import modules
 import importlib
 
@@ -95,13 +95,14 @@ def run(settings):
         objective = {'ciou': ciou_loss, 'l1': l1_loss}
         loss_weight = {'ciou': cfg.TRAIN.IOU_WEIGHT, 'l1': cfg.TRAIN.L1_WEIGHT, 
                        'corner': cfg.TRAIN.CORNER_WEIGHT}
-        actor = MixFormerDistillActor(net=net, net_teacher=net_teacher, objective=objective, loss_weight=loss_weight, settings=settings, run_score_head=False,
+        actor = MixFormerDistillStage1Actor(net=net, net_teacher=net_teacher, objective=objective, loss_weight=loss_weight, settings=settings, run_score_head=False,
                                       z_size_teacher=cfg_teacher.DATA.TEMPLATE.SIZE, x_size_teacher=cfg_teacher.DATA.SEARCH.SIZE, feat_sz=cfg.MODEL.FEAT_SZ)
     elif settings.script_name == 'mixformer2_vit_stu':
         objective = {'ciou': ciou_loss, 'l1': l1_loss}
         loss_weight = {'ciou': cfg.TRAIN.IOU_WEIGHT, 'l1': cfg.TRAIN.L1_WEIGHT, 
                        'corner': cfg.TRAIN.CORNER_WEIGHT, 'feat': cfg.TRAIN.FEAT_WEIGHT}
-        actor = MixFormerSelfDistillActor(net=net, net_teacher=net_teacher, objective=objective, loss_weight=loss_weight, settings=settings, run_score_head=False)
+        actor = MixFormerDistillStage2Actor(net=net, net_teacher=net_teacher, objective=objective, loss_weight=loss_weight, settings=settings, run_score_head=False,
+                                            distill_layers_student=cfg.TRAIN.DISTILL_LAYERS_STUDENT, distill_layers_teacher=cfg.TRAIN.DISTILL_LAYERS_TEACHER)
     else:
         raise ValueError("illegal script name")
     if is_main_process():

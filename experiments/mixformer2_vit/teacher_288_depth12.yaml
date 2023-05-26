@@ -50,7 +50,7 @@ MODEL:
   PREDICT_MASK: false
 TRAIN:
   BACKBONE_MULTIPLIER: 0.1
-  BATCH_SIZE: 32  # 8 for 2080ti (maybe 10), 32 for tesla V100(32 G)
+  BATCH_SIZE: 2  # 8 for 2080ti (maybe 10), 32 for tesla V100(32 G)
   DEEP_SUPERVISION: false
   EPOCH: 500
   IOU_WEIGHT: 2.0

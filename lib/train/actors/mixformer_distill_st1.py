@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class MixFormerDistillActor(BaseActor):
+class MixFormerDistillStage1Actor(BaseActor):
     def __init__(self, net, objective, loss_weight, settings, net_teacher, run_score_head=False,
                  z_size_teacher=None, x_size_teacher=None, feat_sz=None):
         super().__init__(net, objective)
@@ -88,6 +88,7 @@ class MixFormerDistillActor(BaseActor):
         # compute l1 loss
         l1_loss = self.objective['l1'](pred_boxes_vec, gt_boxes_vec)  # (BN,4) (BN,4)
 
+        # compute distillation loss
         distill_loss_logits = self.compute_losses_distill(pred_dict, pred_dict_teacher)
 
         # weighted sum

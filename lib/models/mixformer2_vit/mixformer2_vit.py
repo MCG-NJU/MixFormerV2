@@ -210,7 +210,7 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
     def forward(self, x_t, x_ot, x_s):
         """
         :param x_t: (batch, c, 128, 128)
-        :param x_s: (batch, c, 256, 256)
+        :param x_s: (batch, c, 288, 288)
         :return:
         """
         x_t = self.patch_embed(x_t)  # BCHW-->BNC
@@ -227,12 +227,12 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
         reg_tokens = self.reg_tokens.expand(B, -1, -1)  # (b, 4, embed_dim)
         reg_tokens = reg_tokens + self.pos_embed_reg
         
-        x = torch.cat([x_t, x_ot, x_s, reg_tokens], dim=1)  # (b, hw+hw+HW+4)
+        x = torch.cat([x_t, x_ot, x_s, reg_tokens], dim=1)  # (b, hw+hw+HW+4, embed_dim)
         x = self.pos_drop(x)
 
         distill_feat_list = []
 
-        for i, blk in enumerate(self.blocks, 1):
+        for i, blk in enumerate(self.blocks):
             x = blk(x, H_t, W_t, H_s, W_s)
             distill_feat_list.append(x)
 
@@ -279,9 +279,7 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
             x = blk.set_online(x, H_t, W_t)
 
         x_t = x[:, :H_t * W_t]
-        # x_ot = x[:, H_t * W_t:]
         x_t = rearrange(x_t, 'b (h w) c -> b c h w', h=H_t, w=W_t)
-        # x_ot = rearrange(x_ot.squeeze(0), '(b h w) c -> b c h w', h=H_t, w=W_t)
 
         self.template = x_t
     
@@ -305,7 +303,8 @@ def get_mixformer_vit(config, train):
     if config.MODEL.BACKBONE.PRETRAINED and train:
         ckpt_path = config.MODEL.BACKBONE.PRETRAINED_PATH
         ckpt = torch.load(ckpt_path, map_location='cpu')['model']
-        print("Load pretrained model from {}\n".format(ckpt_path))
+        if is_main_process():
+            print("Load pretrained model from {}\n".format(ckpt_path))
         new_dict = {}
         for k, v in ckpt.items():
             if 'pos_embed' not in k and 'mask_token' not in k:

@@ -59,13 +59,6 @@ class LTRTrainer(BaseTrainer):
         torch.set_grad_enabled(loader.training)
 
         self._init_timing()
-        drop_rate_cur_epoch = 1.0
-        # tot_drop_iters = 40
-        # cur_drop_iter = self.epoch + 1
-        # if cur_drop_iter > 40:
-        #     cur_drop_iter = 40
-        # drop_rate_cur_epoch = 0.5 * (1+ math.cos((math.pi*cur_drop_iter)/tot_drop_iters))
-        print('drop_rate_cur_epoch: {}'.format(drop_rate_cur_epoch))
 
         for i, data in enumerate(loader, 1):
             # get inputs
