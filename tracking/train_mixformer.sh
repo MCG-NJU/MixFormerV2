@@ -1,4 +1,4 @@
-# There are the detailed training settings for MixFormerV2-b and MixFormerV2-s.
+8 There are the detailed training settings for MixFormerV2-b and MixFormerV2-s.
 
 
 ### Stage1 Dense-to-Sparse Distillation
@@ -9,10 +9,10 @@
 # 5. uncomment the following code to train corresponding trackers.
 
 # python tracking/train.py --script mixformer2_vit \
-#  --config student_288_depth12 \
-#  --save_dir . \
-#  --distill 1 --script_teacher mixformer_vit --config_teacher teacher_mixvit_b \
-#  --mode multiple --nproc_per_node 8
+ --config student_288_depth12 \
+ --save_dir . \
+ --distill 1 --script_teacher mixformer_vit --config_teacher teacher_mixvit_b \
+ --mode multiple --nproc_per_node 8
 
 
 ### Stage2 Deep-to-Shallow Distillation
@@ -24,3 +24,11 @@
 #  --save_dir . \
 #  --distill 1 --script_teacher mixformer2_vit --config_teacher teacher_288_depth12 \
 #  --mode multiple --nproc_per_node 8
+
+
+## Train mixformer2_vit_online, which is similar to mixformer
+# python tracking/train.py --script mixformer2_vit_online \
+#  --config 288_depth8_score \
+#  --save_dir . \
+#  --mode multiple --nproc_per_node 1 \
+#  --stage1_model PATH/TO/TRAINED/MODEL

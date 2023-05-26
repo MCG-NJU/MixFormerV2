@@ -10,7 +10,7 @@ import timm.models.vision_transformer
 from timm.models.layers import DropPath, Mlp, trunc_normal_
 
 from lib.utils.misc import is_main_process
-from lib.models.mixformer2_vit.head import build_box_head
+from lib.models.mixformer2_vit.head import build_box_head, build_score_decoder
 from lib.utils.box_ops import box_xyxy_to_cxcywh, box_cxcywh_to_xyxy
 from lib.models.mixformer_vit.pos_util import get_2d_sincos_pos_embed
 
@@ -300,31 +300,19 @@ def get_mixformer_vit(config, train):
     else:
         raise KeyError(f"VIT_TYPE shoule set to 'large_patch16' or 'base_patch16'")
 
-    if config.MODEL.BACKBONE.PRETRAINED and train:
-        ckpt_path = config.MODEL.BACKBONE.PRETRAINED_PATH
-        ckpt = torch.load(ckpt_path, map_location='cpu')['model']
-        new_dict = {}
-        for k, v in ckpt.items():
-            if 'pos_embed' not in k and 'mask_token' not in k:
-                new_dict[k] = v
-        missing_keys, unexpected_keys = vit.load_state_dict(new_dict, strict=False)
-        if is_main_process():
-            print("Load pretrained model from {}\n".format(ckpt_path))
-            print("missing keys:", missing_keys)
-            print("unexpected keys:", unexpected_keys)
-            print("Loading pretrained ViT done.")
     return vit
 
 
 class MixFormer(nn.Module):
     """ Mixformer tracking with score prediction module, whcih jointly perform feature extraction and interaction. """
-    def __init__(self, backbone, box_head, head_type="CORNER"):
+    def __init__(self, backbone, box_head, score_head, head_type="CORNER"):
         """ Initializes the model.
         """
         super().__init__()
         self.backbone = backbone
         self.box_head = box_head
         self.head_type = head_type
+        self.score_head = score_head
 
     def forward(self, template, online_template, search, softmax, run_score_head=True, gt_bboxes=None):
         # search: (b, c, h, w)
@@ -336,7 +324,7 @@ class MixFormer(nn.Module):
             search = search.squeeze(0)
         template, online_template, search, reg_tokens, distill_feat_list = self.backbone(template, online_template, search)
         # Forward the corner head and score head
-        out = self.forward_head(search, reg_tokens=reg_tokens, softmax=softmax)
+        out = self.forward_head(search, reg_tokens=reg_tokens, run_score_head=run_score_head, softmax=softmax)
         out['reg_tokens'] = reg_tokens
         out['distill_feat_list'] = distill_feat_list
 
@@ -359,7 +347,7 @@ class MixFormer(nn.Module):
             online_template = online_template.squeeze(0)
         self.backbone.set_online(template, online_template)
 
-    def forward_head(self, search, reg_tokens, softmax):
+    def forward_head(self, search, reg_tokens, run_score_head, softmax):
         """
         :param search: (b, c, h, w), reg_mask: (b, h, w)
         :return:
@@ -367,6 +355,12 @@ class MixFormer(nn.Module):
         out_dict = {}
         out_dict_box = self.forward_box_head(search, reg_tokens=reg_tokens, softmax=softmax)
         out_dict.update(out_dict_box)
+
+        if run_score_head:
+            out_dict.update({
+                'pred_scores': self.score_head(reg_tokens).view(-1),
+            })
+
         return out_dict
 
     def forward_box_head(self, search, reg_tokens, softmax):
@@ -391,13 +385,25 @@ class MixFormer(nn.Module):
             raise KeyError
 
 
-def build_mixformer_vit(cfg, train=False) -> MixFormer:
+def build_mixformer_vit_online(cfg, settings=None, train=True) -> MixFormer:
     backbone = get_mixformer_vit(cfg, train)  # backbone without positional encoding and attention mask
     box_head = build_box_head(cfg)  # a simple corner head
+    score_head = build_score_decoder(cfg)
     model = MixFormer(
         backbone,
         box_head,
+        score_head,
         head_type=cfg.MODEL.HEAD_TYPE
     )
+
+    if cfg.MODEL.PRETRAINED_STAGE1 and train:
+        ckpt_path = settings.stage1_model
+        ckpt = torch.load(ckpt_path, map_location='cpu')
+        missing_keys, unexpected_keys = model.load_state_dict(ckpt['net'], strict=False)
+        if is_main_process():
+            print("Loading pretrained mixformer weights from {}.".format(ckpt_path))
+            print("missing keys:", missing_keys)
+            print("unexpected keys:", unexpected_keys)
+            print("Loading pretrained mixformer weights done.")
 
     return model

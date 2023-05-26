@@ -1,3 +1,3 @@
 from .mixformer2_vit import build_mixformer_vit as build_mixformer2_vit
 from .mixformer2_vit_stu import build_mixformer_vit as build_mixformer2_vit_stu
-from .mixformer2_vit_online import build_mixformer2_vit_online
+from .mixformer2_vit_online import build_mixformer_vit_online as build_mixformer2_vit_online

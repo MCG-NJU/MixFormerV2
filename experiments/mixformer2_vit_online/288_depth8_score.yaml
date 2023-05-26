@@ -42,12 +42,14 @@ DATA:
 MODEL:
   VIT_TYPE: base_patch16
   BACKBONE:
-    DEPTH: 12
+    DEPTH: 8
+    MLP_RATIO: 4
     PRETRAINED: False
     PRETRAINED_PATH: './models/mae_pretrain_vit_base.pth'  #'/data0/cyt/experiments/trackmae/models/mae_pretrain_vit_base.pth'
   HEAD_TYPE: MLP
   HEAD_FREEZE_BN: True
   HIDDEN_DIM: 768
+  FEAT_SZ: 72
   PREDICT_MASK: false
   PRETRAINED_STAGE1: True
 TRAIN:

@@ -392,9 +392,6 @@ def build_mixformer_vit(cfg, train=False) -> MixFormer:
     if cfg.MODEL.BACKBONE.PRETRAINED and train:
         ckpt_path = cfg.MODEL.BACKBONE.PRETRAINED_PATH
         ckpt: Dict[str, torch.Tensor] = torch.load(ckpt_path, map_location='cpu')['net']
-        if is_main_process():
-            print("Load pretrained model from {}\n".format(ckpt_path))
- 
         new_ckpt = {}
         for k, v in ckpt.items():
             if 'pos_embed_t' in k or 'pos_embed_s' in k or 'mask_token' in k:
@@ -415,6 +412,7 @@ def build_mixformer_vit(cfg, train=False) -> MixFormer:
                 new_ckpt[k] = v
         missing_keys, unexpected_keys = model.load_state_dict(new_ckpt, strict=False)
         if is_main_process():
+            print("Load pretrained model from {}\n".format(ckpt_path))
             print("missing keys:", missing_keys)
             print("unexpected keys:", unexpected_keys)
             print("Loading pretrained ViT done.")

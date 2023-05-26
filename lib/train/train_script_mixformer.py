@@ -1,6 +1,6 @@
 import os
 # loss function related
-from lib.utils.box_ops import giou_loss, ciou_loss
+from lib.utils.box_ops import ciou_loss
 from torch.nn.functional import l1_loss
 from torch.nn import BCEWithLogitsLoss
 # train pipeline related
@@ -10,9 +10,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 # some more advanced functions
 from .base_functions import *
 # network related
-from lib.models.mixformer import build_mixformer, build_mixformer_online_score
-from lib.models.mixformer_vit import build_mixformer_vit
-from lib.models.mixformer2_vit import build_mixformer2_vit
+from lib.models.mixformer2_vit import build_mixformer2_vit, build_mixformer2_vit_online
 # forward propagation related
 from lib.train.actors import MixFormerActor
 # for import modules
@@ -48,12 +46,10 @@ def run(settings):
     loader_train, loader_val = build_dataloaders(cfg, settings)
 
     # Create network
-    if settings.script_name == "mixformer":
-        net = build_mixformer(cfg)
-    elif settings.script_name == "mixformer_online":
-        net = build_mixformer_online_score(cfg, settings)
-    elif settings.script_name == "mixformer2_vit":
+    if settings.script_name == "mixformer2_vit":
         net = build_mixformer2_vit(cfg, settings)
+    elif settings.script_name == "mixformer2_vit_online":
+        net = build_mixformer2_vit_online(cfg, settings)
     else:
         raise ValueError("illegal script name")
 
@@ -70,17 +66,21 @@ def run(settings):
     # settings.save_every_epoch = True
     # Loss functions and Actors
     if settings.script_name == 'mixformer':
-        objective = {'giou': ciou_loss, 'l1': l1_loss}
-        loss_weight = {'giou': cfg.TRAIN.GIOU_WEIGHT, 'l1': cfg.TRAIN.L1_WEIGHT}
+        objective = {'ciou': ciou_loss, 'l1': l1_loss}
+        loss_weight = {'ciou': cfg.TRAIN.ciou_WEIGHT, 'l1': cfg.TRAIN.L1_WEIGHT}
         actor = MixFormerActor(net=net, objective=objective, loss_weight=loss_weight, settings=settings)
     elif settings.script_name == 'mixformer_online':
-        objective = {'giou': ciou_loss, 'l1': l1_loss, 'score': BCEWithLogitsLoss()}
-        loss_weight = {'giou': cfg.TRAIN.GIOU_WEIGHT, 'l1': cfg.TRAIN.L1_WEIGHT, 'score': cfg.TRAIN.SCORE_WEIGHT}
+        objective = {'ciou': ciou_loss, 'l1': l1_loss, 'score': BCEWithLogitsLoss()}
+        loss_weight = {'ciou': cfg.TRAIN.ciou_WEIGHT, 'l1': cfg.TRAIN.L1_WEIGHT, 'score': cfg.TRAIN.SCORE_WEIGHT}
         actor = MixFormerActor(net=net, objective=objective, loss_weight=loss_weight, settings=settings, run_score_head=True)
     elif settings.script_name == 'mixformer2_vit':
-        objective = {'giou': ciou_loss, 'l1': l1_loss}
-        loss_weight = {'giou': cfg.TRAIN.IOU_WEIGHT, 'l1': cfg.TRAIN.L1_WEIGHT}
+        objective = {'ciou': ciou_loss, 'l1': l1_loss}
+        loss_weight = {'ciou': cfg.TRAIN.IOU_WEIGHT, 'l1': cfg.TRAIN.L1_WEIGHT}
         actor = MixFormerActor(net=net, objective=objective, loss_weight=loss_weight, settings=settings)
+    elif settings.script_name == 'mixformer2_vit_online':
+        objective = {'ciou': ciou_loss, 'l1': l1_loss, 'score': BCEWithLogitsLoss()}
+        loss_weight = {'ciou': cfg.TRAIN.IOU_WEIGHT, 'l1': cfg.TRAIN.L1_WEIGHT, 'score': cfg.TRAIN.SCORE_WEIGHT}
+        actor = MixFormerActor(net=net, objective=objective, loss_weight=loss_weight, settings=settings, run_score_head=True)
     else:
         raise ValueError("illegal script name")
 
