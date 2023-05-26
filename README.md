@@ -36,10 +36,9 @@ conda activate mixformer2
 bash install_requirements.sh
 ```
 
-
 ## Data Preparation
 Put the tracking datasets in ./data. It should look like:
-   ```
+```
    ${MixFormerV2_ROOT}
     -- data
         -- lasot
@@ -60,7 +59,7 @@ Put the tracking datasets in ./data. It should look like:
             ...
             |-- TRAIN_11
             |-- TEST
-   ```
+```
 
 ## Set project paths
 Run the following command to set paths for this project
@@ -86,7 +85,13 @@ bash tracking/train_mixformer.sh
 
 ``` bash
 bash tracking/test_mixformer.sh
+
 ```
+
+
+## TODO
+- [] Progressive eliminating version of training.
+- [] Fast version of test forwarding.
 
 ## Contant
 Tianhui Song: 191098194@smail.nju.edu.cn
