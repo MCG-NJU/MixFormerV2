@@ -90,8 +90,8 @@ bash tracking/test_mixformer.sh
 
 
 ## TODO
-- [] Progressive eliminating version of training.
-- [] Fast version of test forwarding.
+- [ ] Progressive eliminating version of training.
+- [ ] Fast version of test forwarding.
 
 ## Contant
 Tianhui Song: 191098194@smail.nju.edu.cn
