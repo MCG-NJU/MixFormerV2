@@ -1,4 +1,4 @@
-8 There are the detailed training settings for MixFormerV2-b and MixFormerV2-s.
+# There are the detailed training settings for MixFormerV2-b and MixFormerV2-s.
 
 
 ### Stage1 Dense-to-Sparse Distillation
@@ -8,7 +8,7 @@
 # 4. place or symbal link the checkpoint at path SAVE_DIR/checkpoints/train/mixformer_vit/TEACHER_CONFIG_NAME
 # 5. uncomment the following code to train corresponding trackers.
 
-# python tracking/train.py --script mixformer2_vit \
+python tracking/train.py --script mixformer2_vit \
  --config student_288_depth12 \
  --save_dir . \
  --distill 1 --script_teacher mixformer_vit --config_teacher teacher_mixvit_b \
