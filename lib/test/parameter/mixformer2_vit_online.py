@@ -1,16 +1,15 @@
 from lib.test.utils import TrackerParams
 import os
 from lib.test.evaluation.environment import env_settings
-from lib.config.mixformer2_vit.config import update_config_from_file, cfg
+from lib.config.mixformer2_vit_online.config import update_config_from_file, cfg
 
 
-def parameters(yaml_name: str, model=None, search_area_scale=None):
+def parameters(yaml_name: str, model=None, search_area_scale=None, online_size=None, update_interval=None):
     params = TrackerParams()
     prj_dir = env_settings().prj_dir
     save_dir = env_settings().save_dir
     # update default config from yaml file
-    # assert 'score' in yaml_name
-    yaml_file = os.path.join(prj_dir, 'experiments/mixformer2_vit/{}.yaml'.format(yaml_name))
+    yaml_file = os.path.join(prj_dir, 'experiments/mixformer2_vit_online/{}.yaml'.format(yaml_name))
     update_config_from_file(yaml_file)
     params.cfg = cfg
     print("test config: ", cfg)
@@ -22,7 +21,10 @@ def parameters(yaml_name: str, model=None, search_area_scale=None):
         params.search_factor = search_area_scale
     else:
         params.search_factor = cfg.TEST.SEARCH_FACTOR
-    print("search_area_scale: {}".format(params.search_factor))
+    if online_size is not None:
+        params.online_size = online_size
+    if update_interval is not None:
+        params.update_interval = update_interval
     # params.search_factor = cfg.TEST.SEARCH_FACTOR
     params.search_size = cfg.TEST.SEARCH_SIZE
 

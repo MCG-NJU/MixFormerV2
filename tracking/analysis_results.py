@@ -15,7 +15,7 @@ args = parser.parse_args()
 
 dataset_name = args.dataset_name
 
-trackers.extend(trackerlist(name='mixformer2_vit', parameter_name=args.tracker_param, dataset_name=args.dataset_name,
+trackers.extend(trackerlist(name='mixformer2_vit_online', parameter_name=args.tracker_param, dataset_name=args.dataset_name,
                             run_ids=args.run_ids, display_name='MixFormerDeit'))
 
 dataset = get_dataset(dataset_name)
