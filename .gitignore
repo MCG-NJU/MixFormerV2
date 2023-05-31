@@ -5,10 +5,10 @@
 *.vscode
 *.pytest_cache
 *.csv
-data
 **/local.py
 *.log
 **/checkpoints
+/data
 /tensorboard
 /logs
 /models
