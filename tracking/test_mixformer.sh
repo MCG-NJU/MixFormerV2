@@ -9,7 +9,7 @@ python tracking/test.py mixformer2_vit_online 288_depth8_score \
 # python tracking/analysis_results.py --dataset_name lasot --tracker_param 288_depth8_score
 
 
-##########-------------- MixFormerV2-Base-----------------##########
+##########-------------- MixFormerV2-Small-----------------##########
 
 ### LaSOT test and evaluation
 # python tracking/test.py mixformer2_vit_online 224_depth4_mlp1_score \
