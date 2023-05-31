@@ -10,6 +10,8 @@ The official implementation of paper: [**MixFormerV2: Efficient Fully Transforme
 
 ## News
 
+- **[May 31, 2023]** We released two versions of the pretrained model, which can be accessed on [Google Driver](https://drive.google.com/drive/folders/1soQMZyvIcY7YrYrGdk6MCstTPlMXNd30?usp=sharing).
+
 - **[May 26, 2023]** Code is available now!
 
 
