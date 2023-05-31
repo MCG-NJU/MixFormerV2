@@ -8,9 +8,9 @@ DATA:
   - 0.406
   SEARCH:
     CENTER_JITTER: 4.5
-    FACTOR: 5.0 #4.5
+    FACTOR: 4.5
     SCALE_JITTER: 0.5
-    SIZE: 288
+    SIZE: 224
   STD:
   - 0.229
   - 0.224
@@ -19,7 +19,7 @@ DATA:
     CENTER_JITTER: 0
     FACTOR: 2.0
     SCALE_JITTER: 0
-    SIZE: 128
+    SIZE: 112
     NUMBER: 2
   TRAIN:
     DATASETS_NAME:
@@ -42,8 +42,8 @@ DATA:
 MODEL:
   VIT_TYPE: base_patch16
   BACKBONE:
-    DEPTH: 8
-    MLP_RATIO: 4
+    DEPTH: 4
+    MLP_RATIO: 1
     PRETRAINED: False
     PRETRAINED_PATH: './models/mae_pretrain_vit_base.pth'  #'/data0/cyt/experiments/trackmae/models/mae_pretrain_vit_base.pth'
   HEAD_TYPE: MLP
@@ -73,9 +73,9 @@ TRAIN:
   WEIGHT_DECAY: 0.0001
 TEST:
   SEARCH_FACTOR: 4.5
-  SEARCH_SIZE: 288
+  SEARCH_SIZE: 224
   TEMPLATE_FACTOR: 2.0
-  TEMPLATE_SIZE: 128
+  TEMPLATE_SIZE: 112
   UPDATE_INTERVALS:
     LASOT: [200]
     GOT10K_TEST: [200]
