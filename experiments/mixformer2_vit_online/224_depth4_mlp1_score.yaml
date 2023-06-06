@@ -84,3 +84,7 @@ TEST:
     VOT20LT: [200]
   ONLINE_SIZES:
     LASOT: [1]
+    GOT10K_TEST: [1]
+    TRACKINGNET: [1]
+    VOT20: [1]
+    VOT20LT: [1]
