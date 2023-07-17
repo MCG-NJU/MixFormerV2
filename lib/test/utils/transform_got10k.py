@@ -6,15 +6,11 @@ import _init_paths
 from lib.test.evaluation.environment import env_settings
 
 
-def transform_got10k(tracker_name, cfg_name, runid=None):
+def transform_got10k(tracker_name, cfg_name):
     env = env_settings()
     result_dir = env.results_path
-    if runid is not None:
-        src_dir = os.path.join(result_dir, "%s/%s_%s/got10k/" % (tracker_name, cfg_name, runid))
-        dest_dir = os.path.join(result_dir, "%s/%s_%s/got10k_submit/" % (tracker_name, cfg_name, runid))
-    else:
-        src_dir = os.path.join(result_dir, "%s/%s/got10k/" % (tracker_name, cfg_name))
-        dest_dir = os.path.join(result_dir, "%s/%s/got10k_submit/" % (tracker_name, cfg_name))
+    src_dir = os.path.join(result_dir, "%s/%s/got10k/" % (tracker_name, cfg_name))
+    dest_dir = os.path.join(result_dir, "%s/%s/got10k_submit/" % (tracker_name, cfg_name))
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
     items = os.listdir(src_dir)
@@ -50,8 +46,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='transform got10k results.')
     parser.add_argument('--tracker_name', type=str, help='Name of tracking method.')
     parser.add_argument('--cfg_name', type=str, help='Name of config file.')
-    parser.add_argument('--runid', type=str, help='Run id.')
 
     args = parser.parse_args()
-    transform_got10k(args.tracker_name, args.cfg_name, args.runid)
+    transform_got10k(args.tracker_name, args.cfg_name)
 
