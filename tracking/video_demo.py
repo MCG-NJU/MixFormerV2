@@ -33,7 +33,7 @@ def main():
 
     parser.add_argument('--params__model', type=str, default=None, help="Tracking model path.")
     parser.add_argument('--params__update_interval', type=int, default=None, help="Update interval of online tracking.")
-    parser.add_argument('--params__online_sizes', type=int, default=None)
+    parser.add_argument('--params__online_size', type=int, default=None)
     parser.add_argument('--params__search_area_scale', type=float, default=None)
     parser.add_argument('--params__max_score_decay', type=float, default=1.0)
     parser.add_argument('--params__vis_attn', type=int, choices=[0, 1], default=0, help="Whether visualize the attention maps.")
