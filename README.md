@@ -1,5 +1,5 @@
 # MixFormerV2
-The official implementation of paper: [**MixFormerV2: Efficient Fully Transformer Tracking**](https://arxiv.org/abs/2305.15896).
+The official implementation of the NeurIPS 2023 paper: [**MixFormerV2: Efficient Fully Transformer Tracking**](https://arxiv.org/abs/2305.15896).
 
 ## Model Framework
 ![model](tracking/model.png)
