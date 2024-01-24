@@ -85,7 +85,7 @@ def run(settings):
     net_teacher.eval()
 
     if settings.local_rank != -1:
-        net = DDP(net, device_ids=[settings.local_rank], find_unused_parameters=True)
+        net = DDP(net, device_ids=[settings.local_rank], find_unused_parameters=cfg.TRAIN.FIND_UNUSED_PARAMETERS)
         net_teacher = DDP(net_teacher, device_ids=[settings.local_rank])
         settings.device = torch.device("cuda:%d" % settings.local_rank)
     else:

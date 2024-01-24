@@ -14,6 +14,7 @@ from lib.utils.misc import is_main_process
 from lib.models.mixformer2_vit.head import build_box_head
 from lib.utils.box_ops import box_xyxy_to_cxcywh, box_cxcywh_to_xyxy
 from lib.models.mixformer_vit.pos_util import get_2d_sincos_pos_embed
+from lib.models.mixformer2_vit.convert_ckpt import remove_layers
 
 from einops import rearrange
 from itertools import repeat
@@ -392,29 +393,12 @@ def build_mixformer_vit(cfg, train=False) -> MixFormer:
     if cfg.MODEL.BACKBONE.PRETRAINED and train:
         ckpt_path = cfg.MODEL.BACKBONE.PRETRAINED_PATH
         ckpt: Dict[str, torch.Tensor] = torch.load(ckpt_path, map_location='cpu')['net']
-        new_ckpt = {}
-        for k, v in ckpt.items():
-            if 'pos_embed_t' in k or 'pos_embed_s' in k or 'mask_token' in k:
-                continue
-            elif 'blocks.' in k:
-                if "blocks.1." in k or "blocks.2." in k or "blocks.4" in k or "blocks.5" in k or \
-                    "blocks.7." in k or "blocks.8." in k or "blocks.10." in k or "blocks.11." in k:
-                    k = k.replace("blocks.1.", "blocks.0.")
-                    k = k.replace("blocks.2.", "blocks.1.")
-                    k = k.replace("blocks.4.", "blocks.2.")
-                    k = k.replace("blocks.5.", "blocks.3.")
-                    k = k.replace("blocks.7.", "blocks.4.")
-                    k = k.replace("blocks.8.", "blocks.5.")
-                    k = k.replace("blocks.10.", "blocks.6.")
-                    k = k.replace("blocks.11.", "blocks.7.")
-                    new_ckpt[k] = v
-            else:
-                new_ckpt[k] = v
+        new_ckpt = remove_layers(ckpt, cfg.TRAIN.REMOVE_LAYERS)
         missing_keys, unexpected_keys = model.load_state_dict(new_ckpt, strict=False)
         if is_main_process():
-            print("Load pretrained model from {}\n".format(ckpt_path))
+            print("Load pretrained model from {}".format(ckpt_path))
             print("missing keys:", missing_keys)
             print("unexpected keys:", unexpected_keys)
-            print("Loading pretrained ViT done.")
+            print("Loading pretrained model done.")
 
     return model
