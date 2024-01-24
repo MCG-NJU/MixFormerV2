@@ -135,7 +135,7 @@ class BaseTrainer:
         }
 
         directory = '{}/{}'.format(self._checkpoint_dir, self.settings.project_path)
-        print(directory)
+        print("Saving checkpoint to ", directory)
         if not os.path.exists(directory):
             print("directory doesn't exist. creating...")
             os.makedirs(directory)

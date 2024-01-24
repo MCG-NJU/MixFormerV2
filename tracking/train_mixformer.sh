@@ -22,6 +22,7 @@ python tracking/train.py --script mixformer2_vit \
 #  --config student_288_depth8 \
 #  --save_dir . \
 #  --distill 1 --script_teacher mixformer2_vit --config_teacher teacher_288_depth12 \
+#  --checkpoint_teacher_path PATH/TO/PRETRAINED/STAGE1/CHECKPOINT \
 #  --mode multiple --nproc_per_node 8
 
 

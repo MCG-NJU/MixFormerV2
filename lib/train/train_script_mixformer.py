@@ -56,7 +56,7 @@ def run(settings):
     # wrap networks to distributed one
     net.cuda()
     if settings.local_rank != -1:
-        net = DDP(net, device_ids=[settings.local_rank], find_unused_parameters=True)
+        net = DDP(net, device_ids=[settings.local_rank], find_unused_parameters=cfg.TRAIN.FIND_UNUSED_PARAMETERS)
         settings.device = torch.device("cuda:%d" % settings.local_rank)
     else:
         settings.device = torch.device("cuda:0")
