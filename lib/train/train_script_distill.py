@@ -77,7 +77,7 @@ def run(settings):
     cfg.TRAIN.DISTILL = True
     cfg_teacher.TRAIN.DISTILL = True
     net = build_network(settings.script_name, cfg)
-    net_teacher = build_network(settings.script_teacher, cfg_teacher,teacher=True)
+    net_teacher = build_network(settings.script_teacher, cfg_teacher, teacher=True)
 
     # wrap networks to distributed one
     net.cuda()
