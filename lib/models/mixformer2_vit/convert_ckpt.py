@@ -1,7 +1,5 @@
 import torch
 from typing import Dict, List
-import sys
-sys.path.append("/data1/songtianhui.sth/projects/MixFormerV2_release")
 
 
 def remove_layers(ckpt: Dict[str, torch.Tensor], removed_layers_idx: List[int]):
@@ -45,7 +43,7 @@ def remove_layers(ckpt: Dict[str, torch.Tensor], removed_layers_idx: List[int]):
             continue
         elif 'blocks.' in k:
             if any(
-                (p in k) for p in rename_map.keys()
+                (s in k) for s in rename_map.keys()
             ):
                 new_k = k
                 for original_p, new_p in rename_map.items():
@@ -56,8 +54,3 @@ def remove_layers(ckpt: Dict[str, torch.Tensor], removed_layers_idx: List[int]):
             new_ckpt[k] = v
     
     return new_ckpt
-
-
-if __name__ == "__main__":
-    ckpt = torch.load('checkpoints/train/mixformer2_vit/student_288_depth12/MixFormer_ep0001.pth.tar', map_location='cpu')['net']
-    new_ckpt = remove_layers(ckpt, [2,5,8,11])

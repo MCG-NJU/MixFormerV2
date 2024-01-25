@@ -179,6 +179,15 @@ def get_optimizer_scheduler(net, cfg):
                 if is_main_process():
                     print(n)
     else:
+        # set remove layers no grad
+        remove_params = [f"blocks.{idx}." for idx in cfg.TRAIN.REMOVE_LAYERS]
+        for n, p in net.named_parameters():
+            if any(
+                (s in n) for s in remove_params
+            ):
+                print("Remove parameter: ", n)
+                p.requires_grad = False
+
         param_dicts = [
             {"params": [p for n, p in net.named_parameters() if "backbone" not in n and p.requires_grad]},
             {
