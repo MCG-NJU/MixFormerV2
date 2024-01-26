@@ -41,4 +41,4 @@ python tracking/train.py --script mixformer2_vit \
 #  --config 288_depth8_score \
 #  --save_dir . \
 #  --mode multiple --nproc_per_node 1 \
-#  --stage1_model PATH/TO/TRAINED/MODEL
+#  --static_model PATH/TO/TRAINED/MODEL

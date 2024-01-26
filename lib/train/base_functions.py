@@ -162,7 +162,7 @@ def get_optimizer_scheduler(net, cfg):
             else:
                 if is_main_process():
                     print(n)
-    elif freeze_stage0:
+    elif freeze_stage0: # For CVT-Large
         print("Freeze Stage0 of MixFormer backbone.")
         param_dicts = [
             {"params": [p for n, p in net.named_parameters() if "backbone" not in n and p.requires_grad]},
