@@ -44,7 +44,7 @@ MODEL:
     DEPTH: 12
     MLP_RATIO: 4
     PRETRAINED: True
-    PRETRAINED_PATH: './models/mae_pretrain_vit_base.pth'  #'/data0/cyt/experiments/trackmae/models/mae_pretrain_vit_base.pth'
+    PRETRAINED_PATH: './models/mae_pretrain_vit_base.pth'
   HEAD_TYPE: MLP
   HIDDEN_DIM: 768
   PREDICT_MASK: false
@@ -68,6 +68,7 @@ TRAIN:
     DECAY_RATE: 400
   VAL_EPOCH_INTERVAL: 5
   WEIGHT_DECAY: 0.0001
+  FIND_UNUSED_PARAMETERS: false
 TEST:
   EPOCH: 500
   SEARCH_FACTOR: 4.5

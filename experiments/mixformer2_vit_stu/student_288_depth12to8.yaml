@@ -69,10 +69,10 @@ TRAIN:
     DECAY_RATE: 400
   VAL_EPOCH_INTERVAL: 5
   WEIGHT_DECAY: 0.0001
-  FIND_UNUSED_PARAMETERS: false
-  REMOVE_LAYERS: []  # layers which will not be loaded in checkpoint
-  INVALID_LAYERS: [0, 3, 6, 9]
-  DISTILL_LAYERS_STUDENT: [1, 3, 5, 7]
+  FIND_UNUSED_PARAMETERS: true
+  REMOVE_LAYERS: [0, 3, 6, 9]
+  INVALID_LAYERS: []  # layers which will not be loaded in checkpoint
+  DISTILL_LAYERS_STUDENT: [2, 5, 8, 11]
   DISTILL_LAYERS_TEACHER: [2, 5, 8, 11]
 TEST:
   EPOCH: 500

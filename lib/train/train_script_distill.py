@@ -76,6 +76,7 @@ def run(settings):
     """turn on the distillation mode"""
     cfg.TRAIN.DISTILL = True
     cfg_teacher.TRAIN.DISTILL = True
+    cfg.MODEL.BACKBONE.PRETRAINED_PATH = settings.checkpoint_teacher_path # overwrite pretrained weight with teacher model
     net = build_network(settings.script_name, cfg)
     net_teacher = build_network(settings.script_teacher, cfg_teacher, teacher=True)
 

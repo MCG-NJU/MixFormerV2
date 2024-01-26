@@ -11,18 +11,28 @@ python tracking/train.py --script mixformer2_vit \
  --config student_288_depth12 \
  --save_dir . \
  --distill 1 --script_teacher mixformer_vit --config_teacher teacher_mixvit_b \
- --checkpoint_teacher_path PATH/TO/TEACHER/MODEL \
+ --checkpoint_teacher_path ./models/mixformer_vit_base_online.pth.tar \
  --mode multiple --nproc_per_node 8
 
 
 ### Stage2 Deep-to-Shallow Distillation
-# with trained student model checkpoint from stage1, set the checkpoint path 'MODEL:BACKBONE:PRETRAINED_PATH' at experiment/mixformer2_vit_stu/CONFIG_NAME.yaml.
+# with trained student model checkpoint from stage1
 
+## 2.1 Remove layers
+# python tracking/train.py --script mixformer2_vit_stu \
+#  --config student_288_depth12to8 \
+#  --save_dir . \
+#  --distill 1 --script_teacher mixformer2_vit --config_teacher teacher_288_depth12 \
+#  --checkpoint_teacher_path PATH/TO/STAGE1/CHECKPOINT \
+#  --mode multiple --nproc_per_node 8
+
+
+## 2.2 Continuing finetune
 # python tracking/train.py --script mixformer2_vit_stu \
 #  --config student_288_depth8 \
 #  --save_dir . \
 #  --distill 1 --script_teacher mixformer2_vit --config_teacher teacher_288_depth12 \
-#  --checkpoint_teacher_path PATH/TO/PRETRAINED/STAGE1/CHECKPOINT \
+#  --checkpoint_teacher_path PATH/TO/REMOVE/CHECKPOINT \
 #  --mode multiple --nproc_per_node 8
 
 
