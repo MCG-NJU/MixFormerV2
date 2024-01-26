@@ -36,7 +36,7 @@ python tracking/train.py --script mixformer2_vit \
 #  --mode multiple --nproc_per_node 8
 
 
-## Train mixformer2_vit_online, which is similar to mixformer
+## Train Online Head, which is similar to mixformer
 # python tracking/train.py --script mixformer2_vit_online \
 #  --config 288_depth8_score \
 #  --save_dir . \
