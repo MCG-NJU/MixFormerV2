@@ -77,7 +77,7 @@ python tracking/train.py \
 - 教师模型依然和前面一样。
 - 学生模型的配置文件为 `experiments/mixformer2_vit_stu/student_288_depth8.yaml`，加载上一步骤中保存的 checkpoint。
   - 在配置文件中设置 `MODEL.BACKBONE.PRETRAINED_PATH`。
-  - 注意该模型已经是8层的模型，在加载模型时需要进行 state_dict 中的一些 key 的修改，去掉不需要的层（在配置中的 `TRAIN.INVALID_LAYERS` 指示），reset 剩余的层的索引。
+  - 注意该模型已经是8层的模型，在加载模型时需要进行 state_dict 中的一些 key 的修改，去掉不需要的层（在配置中的 `TRAIN.INVALID_LAYERS` 指示），reset 剩余的层的索引。代码中已实现。
   - 特征监督所对应的索引也要相应修改。
 - 训练完成后，就得到了最终的压缩后的8层MixFormerV2模型，应该保存在 `checkpoints/train/mixformer2_vit_stu/student_288_depth8/` 路径下。
 
