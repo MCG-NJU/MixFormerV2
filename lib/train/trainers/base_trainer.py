@@ -79,7 +79,7 @@ class BaseTrainer:
                     directory = '{}/{}'.format(self._checkpoint_dir, self.settings.project_path_prv)
                     self.load_state_dict(directory)
                 if distill:
-                    directory_teacher = '{}/{}'.format(self._checkpoint_dir, self.settings.project_path_teacher)
+                    directory_teacher = self.settings.checkpoint_teacher_path
                     print("Load teacher's checkpoint from {}".format(directory_teacher))
                     self.load_state_dict(directory_teacher, distill=True)
                 for epoch in range(self.epoch+1, max_epochs+1):
@@ -135,7 +135,7 @@ class BaseTrainer:
         }
 
         directory = '{}/{}'.format(self._checkpoint_dir, self.settings.project_path)
-        print(directory)
+        print("Saving checkpoint to ", directory)
         if not os.path.exists(directory):
             print("directory doesn't exist. creating...")
             os.makedirs(directory)

@@ -24,7 +24,7 @@ class MixFormerDistillStage2Actor(BaseActor):
         if is_main_process():
             print(f"Supervise student's {self.distill_layers_student}-th layers with teacher's {self.distill_layers_teacher}-th layers")
 
-    def __call__(self, data):
+    def __call__(self, data, remove_rate_cur_epoch):
         """
         args:
             data - The input data, should contain the fields 'template', 'search', 'gt_bbox'.
@@ -35,7 +35,8 @@ class MixFormerDistillStage2Actor(BaseActor):
             status  -  dict containing detailed losses
         """
         # forward student
-        out_dict = self.forward_pass(data)  # forward teacher
+        out_dict = self.forward_pass(data, remove_rate_cur_epoch)
+        # forward teacher
         with torch.no_grad():
             out_dict_teacher = self.forward_pass_teacher(data)
 
@@ -52,11 +53,13 @@ class MixFormerDistillStage2Actor(BaseActor):
         # compute losses
         loss, status = self.compute_losses(out_dict, out_dict_teacher, gt_bboxes[0], labels=labels)
 
+        status.update({"remove_rate": remove_rate_cur_epoch})
+
         return loss, status
 
-    def forward_pass(self, data):
+    def forward_pass(self, data, remove_rate_cur_epoch):
         out_dict = self.net(data['template_images'][0], data['template_images'][1], data['search_images'],
-                            softmax=False)
+                            softmax=False, remove_rate_cur_epoch=remove_rate_cur_epoch)
         return out_dict
 
     def forward_pass_teacher(self, data):
@@ -142,7 +145,6 @@ class MixFormerDistillStage2Actor(BaseActor):
                            self.distill_logits_loss(F.log_softmax(prob_r, dim=1), prob_r_tea))  / 4
 
 
-        # assert len(pred_dict['distill_feat_list']) == 8 and len(pred_dict_teacher['distill_feat_list']) == 12
         index_s = self.distill_layers_student
         index_t = self.distill_layers_teacher
         dist_feat_stu = torch.stack([pred_dict['distill_feat_list'][i] for i in index_s], dim=0)

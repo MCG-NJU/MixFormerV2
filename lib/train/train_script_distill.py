@@ -77,7 +77,7 @@ def run(settings):
     cfg.TRAIN.DISTILL = True
     cfg_teacher.TRAIN.DISTILL = True
     net = build_network(settings.script_name, cfg)
-    net_teacher = build_network(settings.script_teacher, cfg_teacher,teacher=True)
+    net_teacher = build_network(settings.script_teacher, cfg_teacher, teacher=True)
 
     # wrap networks to distributed one
     net.cuda()
@@ -85,7 +85,7 @@ def run(settings):
     net_teacher.eval()
 
     if settings.local_rank != -1:
-        net = DDP(net, device_ids=[settings.local_rank], find_unused_parameters=True)
+        net = DDP(net, device_ids=[settings.local_rank], find_unused_parameters=cfg.TRAIN.FIND_UNUSED_PARAMETERS)
         net_teacher = DDP(net_teacher, device_ids=[settings.local_rank])
         settings.device = torch.device("cuda:%d" % settings.local_rank)
     else:
@@ -113,7 +113,9 @@ def run(settings):
     optimizer, lr_scheduler = get_optimizer_scheduler(net, cfg)
     use_amp = getattr(cfg.TRAIN, "AMP", False)
 
-    trainer = LTRTrainer(actor, [loader_train, loader_val], optimizer, settings, lr_scheduler=lr_scheduler, use_amp=use_amp)
+    remove_mode = (len(cfg.TRAIN.REMOVE_LAYERS) > 0)
+    print("Remove mode: ", remove_mode)
+    trainer = LTRTrainer(actor, [loader_train, loader_val], optimizer, settings, lr_scheduler=lr_scheduler, use_amp=use_amp, remove_mode=remove_mode)
 
     # train process
     trainer.train(cfg.TRAIN.EPOCH, load_latest=True, fail_safe=True, distill=True)

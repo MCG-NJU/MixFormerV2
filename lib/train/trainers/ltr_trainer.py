@@ -12,7 +12,7 @@ from torch.cuda.amp import GradScaler
 
 
 class LTRTrainer(BaseTrainer):
-    def __init__(self, actor, loaders, optimizer, settings, lr_scheduler=None, use_amp=False):
+    def __init__(self, actor, loaders, optimizer, settings, lr_scheduler=None, use_amp=False, remove_mode=False):
         """
         args:
             actor - The actor for training the network
@@ -39,6 +39,7 @@ class LTRTrainer(BaseTrainer):
         self.move_data_to_gpu = getattr(settings, 'move_data_to_gpu', True)
         self.settings = settings
         self.use_amp = use_amp
+        self.remove_mode = remove_mode
         if use_amp:
             self.scaler = GradScaler()
 
@@ -60,6 +61,15 @@ class LTRTrainer(BaseTrainer):
 
         self._init_timing()
 
+        # adjust remove rate
+        if self.remove_mode:
+            total_remove_epochs = 40    # hardcode now
+            cur_remove_epoch = min(self.epoch + 1, total_remove_epochs)
+            remove_rate_cur_epoch = 0.5 * (1 + math.cos((math.pi * cur_remove_epoch) / total_remove_epochs))
+        else:
+            remove_rate_cur_epoch = 1.0
+        print("Remove rate: ", remove_rate_cur_epoch)
+
         for i, data in enumerate(loader, 1):
             # get inputs
             if self.move_data_to_gpu:
@@ -69,8 +79,7 @@ class LTRTrainer(BaseTrainer):
             data['settings'] = self.settings
             # forward pass
             if not self.use_amp:
-                loss, stats = self.actor(data)
-                # loss, stats = self.actor(data, drop_rate_cur_epoch)
+                loss, stats = self.actor(data, remove_rate_cur_epoch)
             else:
                 with autocast():
                     loss, stats = self.actor(data)

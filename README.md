@@ -78,14 +78,16 @@ lib/test/evaluation/local.py  # paths about testing
 
 ## Train MixFormerV2
 
-Training with multiple GPUs using DDP. More details of other training settings can be found at `tracking/train_mixformer.sh`.
+Training with multiple GPUs using DDP. 
+You can follow instructions (in Chinese now) in [training.md](tutorials/training_zh.md).
+Example scripts can be found in `tracking/train_mixformer.sh`.
 
 ``` bash
 bash tracking/train_mixformer.sh
 ```
 
 ## Test and evaluate MixFormerV2 on benchmarks
-- LaSOT/GOT10k-test/TrackingNet/OTB100/UAV123/TNL2k. More details of test settings can be found at `tracking/test_mixformer.sh`.
+- LaSOT/GOT10k-test/TrackingNet/OTB100/UAV123/TNL2k. More details of test settings can be found in `tracking/test_mixformer.sh`.
 
 ``` bash
 bash tracking/test_mixformer.sh
@@ -94,7 +96,7 @@ bash tracking/test_mixformer.sh
 
 
 ## TODO
-- [ ] Progressive eliminating version of training.
+- [x] Progressive eliminating version of training.
 - [ ] Fast version of test forwarding.
 
 ## Contant

@@ -21,7 +21,7 @@ class MixFormer(BaseTracker):
         self.preprocessor = Preprocessor_wo_mask()
         self.state = None
         # for debug
-        self.debug = False
+        self.debug = params.debug
         self.frame_id = 0
         if self.debug:
             self.save_dir = "debug"

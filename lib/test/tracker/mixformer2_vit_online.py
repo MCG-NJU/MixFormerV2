@@ -24,10 +24,10 @@ class MixFormerOnline(BaseTracker):
         self.preprocessor = Preprocessor_wo_mask()
         self.state = None
         # for debug
-        self.debug = False
+        self.debug = params.debug
         self.frame_id = 0
         if self.debug:
-            self.save_dir = ""
+            self.save_dir = "debug"
             if not os.path.exists(self.save_dir):
                 os.makedirs(self.save_dir)
         # for save boxes from all queries

@@ -25,7 +25,8 @@ def init_seeds(seed):
 
 def run_training(script_name, config_name, cudnn_benchmark=True, local_rank=-1, save_dir=None, base_seed=None,
                  use_lmdb=False, script_name_prv=None, config_name_prv=None,
-                 distill=None, script_teacher=None, config_teacher=None, stage1_model=None):
+                 distill=None, script_teacher=None, config_teacher=None, checkpoint_teacher_path=None, 
+                 static_model=None):
     """Run the train script.
     args:
         script_name: Name of emperiment in the "experiments/" folder.
@@ -51,7 +52,7 @@ def run_training(script_name, config_name, cudnn_benchmark=True, local_rank=-1, 
     settings = ws_settings.Settings()
     settings.script_name = script_name
     settings.config_name = config_name
-    settings.stage1_model = stage1_model
+    settings.static_model = static_model
     settings.project_path = 'train/{}/{}'.format(script_name, config_name)
     if script_name_prv is not None and config_name_prv is not None:
         settings.project_path_prv = 'train/{}/{}'.format(script_name_prv, config_name_prv)
@@ -66,8 +67,7 @@ def run_training(script_name, config_name, cudnn_benchmark=True, local_rank=-1, 
         settings.distill = distill
         settings.script_teacher = script_teacher
         settings.config_teacher = config_teacher
-        if script_teacher is not None and config_teacher is not None:
-            settings.project_path_teacher = 'train/{}/{}'.format(script_teacher, config_teacher)
+        settings.checkpoint_teacher_path = checkpoint_teacher_path
         settings.cfg_file_teacher = os.path.join(prj_dir, 'experiments/%s/%s.yaml' % (script_teacher, config_teacher))
         # expr_module = importlib.import_module('lib.train.train_script_mixformer')
         expr_module = importlib.import_module('lib.train.train_script_distill')
@@ -84,7 +84,7 @@ def main():
     parser.add_argument('--script', type=str, required=True, help='Name of the train script.')
     parser.add_argument('--config', type=str, required=True, help="Name of the config file.")
     parser.add_argument('--cudnn_benchmark', type=bool, default=True, help='Set cudnn benchmark on (1) or off (0) (default is on).')
-    parser.add_argument('--local_rank', default=-1, type=int, help='node rank for distributed training')
+    parser.add_argument('--local-rank', default=-1, type=int, help='node rank for distributed training')
     parser.add_argument('--save_dir', type=str, help='the directory to save checkpoints and logs')
     parser.add_argument('--seed', type=int, default=42, help='seed for random numbers')
     parser.add_argument('--use_lmdb', type=int, choices=[0, 1], default=0)  # whether datasets are in lmdb format
@@ -94,7 +94,8 @@ def main():
     parser.add_argument('--distill', type=int, choices=[0, 1], default=0)  # whether to use knowledge distillation
     parser.add_argument('--script_teacher', type=str, help='teacher script name')
     parser.add_argument('--config_teacher', type=str, help='teacher yaml configure file name')
-    parser.add_argument('--stage1_model', type=str, default=None, help='stage1 model used to train SPM.')
+    parser.add_argument('--checkpoint_teacher_path', type=str, help='teacher model checkpoint path')
+    parser.add_argument('--static_model', type=str, default=None, help='static model used to train SPM.')
 
     args = parser.parse_args()
     if args.local_rank != -1:
@@ -106,7 +107,8 @@ def main():
                  local_rank=args.local_rank, save_dir=args.save_dir, base_seed=args.seed,
                  use_lmdb=args.use_lmdb, script_name_prv=args.script_prv, config_name_prv=args.config_prv,
                  distill=args.distill, script_teacher=args.script_teacher, config_teacher=args.config_teacher,
-                 stage1_model=args.stage1_model)
+                 checkpoint_teacher_path=args.checkpoint_teacher_path,
+                 static_model=args.static_model)
 
 
 if __name__ == '__main__':
