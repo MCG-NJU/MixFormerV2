@@ -1,11 +1,11 @@
 # 训练教程
 
-本方法使用多阶段训练，配置操作略为复杂，本文档通过将 MixFormer-ViT-Base 蒸馏为一个8层模型为示例，说明训练的流程。
+本方法使用多阶段训练，本文档通过将 MixFormer-ViT-Base 蒸馏为一个8层模型为示例，说明训练的流程。
 
 ## 一阶段训练
 
 一阶段为 **Dense-to-Sparse** 蒸馏，用来引入 Prediction Token，替换定位头。
-我们使用 MixFormer-ViT-Base 为教师模型，下载好checkpoint（假设权重保存在 `models/mixformer_vit_base_online.pth.tar`），教师模型使用的配置文件为 `experiments/mixformer_vit/teacher_mixvit_b.yaml`。
+我们使用 MixFormer-ViT-Base 为教师模型，下载好 [checkpoint](https://github.com/MCG-NJU/MixFormer)（假设权重保存在 `models/mixformer_vit_base_online.pth.tar`），教师模型使用的配置文件为 `experiments/mixformer_vit/teacher_mixvit_b.yaml`。
 学生模型使用的配置文件为 `experiments/mixformer2_vit/student_288_depth12.yaml`，主要的数据，训练等超参也在学生配置文件中定义。
 
 执行训练：
@@ -69,14 +69,14 @@ python tracking/train.py \
  --distill 1 \
  --script_teacher mixformer2_vit \
  --config_teacher teacher_288_depth12 \
- --checkpoint_teacher_path ./checkpoints/train/mixformer2_vit_stu/student_288_depth12to8/MixFormer_ep0045.pth.tar \
+ --checkpoint_teacher_path ./checkpoints/train/mixformer2_vit/student_288_depth12/MixFormer_ep0500.pth.tar \
  --mode multiple --nproc_per_node 8
 ```
 
 说明：
 - 教师模型依然和前面一样。
 - 学生模型的配置文件为 `experiments/mixformer2_vit_stu/student_288_depth8.yaml`，加载上一步骤中保存的 checkpoint。
-  - 在配置文件中设置 `MODEL.BACKBONE.PRETRAINED_PATH`。
+  - 在配置文件中设置 `MODEL.BACKBONE.PRETRAINED_PATH` 为前一步 checkpoint 路径。
   - 注意该模型已经是8层的模型，在加载模型时需要进行 state_dict 中的一些 key 的修改，去掉不需要的层（在配置中的 `TRAIN.INVALID_LAYERS` 指示），reset 剩余的层的索引。代码中已实现。
   - 特征监督所对应的索引也要相应修改。
 - 训练完成后，就得到了最终的压缩后的8层MixFormerV2模型，应该保存在 `checkpoints/train/mixformer2_vit_stu/student_288_depth8/` 路径下。
@@ -94,3 +94,4 @@ python tracking/train.py --script mixformer2_vit_online \
 ```
 说明：
 - `--static_model` 即为以上训练完成的模型，在这个阶段不会更新参数，只会额外训练一个MLP得分模块。
+- 最终模型应该保存在 `checkpoints/train/mixformer2_vit_online/288_depth8_score/` 路径下。
