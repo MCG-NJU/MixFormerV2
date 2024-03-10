@@ -21,7 +21,7 @@ class MixFormerDistillStage1Actor(BaseActor):
         self.z_size_teacher = z_size_teacher
         self.x_size_teacher = x_size_teacher
 
-    def __call__(self, data):
+    def __call__(self, data, remove_rate_cur_epoch):
         """
         args:
             data - The input data, should contain the fields 'template', 'search', 'gt_bbox'.
