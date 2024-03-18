@@ -26,6 +26,7 @@ python tracking/train.py \
 - `--config`/`--teacher_config` 参数指示模型所使用的配置文件。
 - `--checkpoint_teacher_path` 为教师模型权重文件路径。
 - 第一阶段训练完成后，会得到12层的 mixformer2_vit 的模型 checkpoint，应该会保存在 `checkpoints/train/mixformer2_vit/student_288_depth12/` 目录下。
+  - 我们也提供了该阶段的中间结果模型，[download link](https://box.nju.edu.cn/d/aba770262d984b1594d2/)。
 
 ## 二阶段训练
 第二阶段为 **Deep-to-Shallow** 蒸馏，用来撤除模型中的部分层，减小模型层数。
