@@ -12,7 +12,7 @@ The official implementation of the NeurIPS 2023 paper: [**MixFormerV2: Efficient
 
 - **[Sep 22, 2023]** MixFormerV2 is accpeted by **NeurIPS 2023**! :tada:
 
-- **[May 31, 2023]** We released two versions of the pretrained model, which can be accessed on [Google Driver](https://drive.google.com/drive/folders/1soQMZyvIcY7YrYrGdk6MCstTPlMXNd30?usp=sharing).
+- **[May 31, 2023]** We released two versions of the pretrained model, which can be accessed on [Google Driver](https://drive.google.com/drive/folders/1soQMZyvIcY7YrYrGdk6MCstTPlMXNd30?usp=sharing) and [NJU Box](https://box.nju.edu.cn/d/aba770262d984b1594d2/).
 
 - **[May 26, 2023]** Code is available now!
 
