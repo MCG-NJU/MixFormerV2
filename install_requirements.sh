@@ -93,6 +93,12 @@ pip install yacs
 pip install einops
 pip install thop
 
+echo "****************** Installing gradio ******************"
+pip install gradio==3.47.1
+
+echo "****************** Installing gradio ******************"
+pip install mmengine
+
 echo "****************** Install ninja-build for Precise ROI pooling ******************"
 apt-get install ninja-build
 
